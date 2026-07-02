@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SERVING ANGLES 💅</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;900&display=swap');
+    :root { --primary: #7c3aed; --secondary: #ec4899; --accent: #fbbf24; --success: #10b981; --error: #ef4444; --bg: #0f0a1e; --card: #1a1235; --text: #f0e6ff; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse at 15% 15%, rgba(124,58,237,.25) 0%, transparent 55%), radial-gradient(ellipse at 85% 80%, rgba(236,72,153,.2) 0%, transparent 55%), radial-gradient(ellipse at 50% 50%, rgba(30,21,64,.4) 0%, transparent 70%); z-index: -1; pointer-events: none; }
+    .game-container { width: 100%; max-width: 740px; padding: 20px; }
+    #titleScreen { text-align: center; padding: 48px 20px 40px; animation: fadeUp .5s ease; }
+    .title-emoji { font-size: 5.5rem; display: block; animation: bounce 2.2s ease-in-out infinite; }
+    @keyframes bounce { 0%,100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-18px) rotate(3deg); } }
+    h1.game-title { font-family: 'Fredoka One', cursive; font-size: clamp(2.8rem, 9vw, 4.4rem); background: linear-gradient(135deg, #a78bfa 0%, #f472b6 50%, #fbbf24 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.05; margin: 12px 0 6px; letter-spacing: .02em; }
+    .subtitle { font-size: 1rem; color: #a78bfa; font-weight: 700; letter-spacing: .06em; margin-bottom: 28px; text-transform: lowercase; }
+    .topic-badges { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 24px 0 32px; }
+    .badge { background: rgba(124,58,237,.22); border: 1.5px solid rgba(124,58,237,.55); border-radius: 20px; padding: 7px 16px; font-size: .85rem; font-weight: 700; }
+    .start-btn { background: linear-gradient(135deg, #7c3aed, #ec4899); color: white; border: none; border-radius: 50px; padding: 18px 54px; font-size: 1.35rem; font-family: 'Fredoka One', cursive; cursor: pointer; box-shadow: 0 0 35px rgba(124,58,237,.55); transition: transform .2s, box-shadow .2s; letter-spacing: .05em; }
+    .start-btn:hover { transform: scale(1.06); box-shadow: 0 0 50px rgba(124,58,237,.75); }
+    .q-count { color: #7c6a9a; font-size: .88rem; margin-top: 12px; }
+    #quizScreen { display: none; }
+    .progress-bar-wrap { background: rgba(255,255,255,.08); border-radius: 99px; height: 8px; margin-bottom: 18px; overflow: hidden; }
+    .progress-bar { height: 100%; background: linear-gradient(90deg, #7c3aed, #ec4899); border-radius: 99px; transition: width .45s ease; }
+    .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .q-counter { font-size: .88rem; color: #a78bfa; font-weight: 700; }
+    .hud-right { display: flex; gap: 10px; align-items: center; }
+    .streak-chip { background: rgba(251,191,36,.18); border: 1.5px solid rgba(251,191,36,.5); border-radius: 99px; padding: 4px 14px; font-size: .85rem; font-weight: 800; color: #fbbf24; visibility: hidden; }
+    .streak-chip.show { visibility: visible; }
+    .score-chip { background: rgba(124,58,237,.22); border: 1.5px solid rgba(124,58,237,.45); border-radius: 99px; padding: 4px 16px; font-size: .85rem; font-weight: 800; color: #c4b5fd; }
+    .cat-label { font-size: .78rem; font-weight: 800; text-transform: uppercase; letter-spacing: .12em; color: #f472b6; margin-bottom: 10px; }
+    .question-card { background: var(--card); border: 1.5px solid rgba(124,58,237,.3); border-radius: 22px; padding: 28px 28px 24px; box-shadow: 0 10px 40px rgba(0,0,0,.35); animation: fadeUp .3s ease; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+    .question-text { font-size: 1.12rem; font-weight: 700; line-height: 1.55; margin-bottom: 22px; }
+    .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 480px) { .options-grid { grid-template-columns: 1fr; } }
+    .opt-btn { background: rgba(255,255,255,.05); border: 2px solid rgba(124,58,237,.3); border-radius: 14px; padding: 15px 14px; font-size: 1rem; font-weight: 700; color: var(--text); cursor: pointer; transition: background .15s, border-color .15s, transform .15s; font-family: 'Nunito', sans-serif; text-align: center; }
+    .opt-btn:hover:not(:disabled) { background: rgba(124,58,237,.22); border-color: #7c3aed; transform: translateY(-2px); }
+    .opt-btn.correct { background: rgba(16,185,129,.2); border-color: #10b981; color: #6ee7b7; }
+    .opt-btn.wrong { background: rgba(239,68,68,.2); border-color: #ef4444; color: #fca5a5; }
+    .input-row { display: flex; gap: 10px; }
+    .num-input { flex: 1; background: rgba(255,255,255,.06); border: 2px solid rgba(124,58,237,.35); border-radius: 14px; padding: 14px 20px; font-size: 1.25rem; font-weight: 800; color: var(--text); font-family: 'Nunito', sans-serif; outline: none; transition: border-color .2s, background .2s; }
+    .num-input:focus { border-color: #7c3aed; background: rgba(124,58,237,.12); }
+    .num-input.correct { border-color: #10b981; background: rgba(16,185,129,.12); }
+    .num-input.wrong { border-color: #ef4444; background: rgba(239,68,68,.12); }
+    .check-btn { background: linear-gradient(135deg, #7c3aed, #ec4899); color: #fff; border: none; border-radius: 14px; padding: 14px 22px; font-size: .95rem; font-weight: 800; cursor: pointer; transition: transform .15s; font-family: 'Nunito', sans-serif; white-space: nowrap; }
+    .check-btn:hover:not(:disabled) { transform: scale(1.04); }
+    .check-btn:disabled { opacity: .45; cursor: default; }
+    .feedback { display: none; margin-top: 16px; border-radius: 14px; padding: 14px 18px; font-weight: 700; font-size: .95rem; line-height: 1.5; }
+    .feedback.show { display: block; animation: fadeUp .25s ease; }
+    .feedback.correct-fb { background: rgba(16,185,129,.15); border: 1.5px solid #10b981; }
+    .feedback.wrong-fb { background: rgba(239,68,68,.15); border: 1.5px solid #ef4444; }
+    .expl { margin-top: 6px; font-size: .88rem; font-weight: 600; opacity: .8; font-family: monospace; letter-spacing: .01em; }
+    .next-btn { display: none; width: 100%; background: linear-gradient(135deg, #7c3aed, #ec4899); color: #fff; border: none; border-radius: 50px; padding: 16px; font-size: 1.1rem; font-family: 'Fredoka One', cursive; cursor: pointer; margin-top: 14px; transition: transform .2s, box-shadow .2s; letter-spacing: .05em; }
+    .next-btn:hover { transform: scale(1.02); box-shadow: 0 4px 24px rgba(124,58,237,.45); }
+    .next-btn.show { display: block; animation: fadeUp .3s ease; }
+    #resultsScreen { display: none; text-align: center; padding: 40px 20px; animation: fadeUp .5s ease; }
+    .result-emoji { font-size: 5rem; display: block; margin-bottom: 8px; }
+    .result-title { font-family: 'Fredoka One', cursive; font-size: clamp(1.8rem, 6vw, 2.8rem); background: linear-gradient(135deg, #a78bfa, #f472b6, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 6px; }
+    .score-big { font-size: 4.5rem; font-weight: 900; margin: 18px 0 6px; }
+    .score-frac { font-size: 1rem; color: #a78bfa; margin-bottom: 18px; font-weight: 700; }
+    .grade-msg { font-size: 1rem; color: #d8bfff; line-height: 1.65; max-width: 420px; margin: 0 auto 28px; }
+    .breakdown { background: var(--card); border: 1.5px solid rgba(124,58,237,.3); border-radius: 20px; padding: 22px 24px; margin: 0 0 28px; text-align: left; }
+    .breakdown h3 { font-family: 'Fredoka One', cursive; font-size: 1.15rem; color: #a78bfa; margin-bottom: 14px; text-align: center; }
+    .bd-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid rgba(255,255,255,.06); font-size: .9rem; }
+    .bd-row:last-child { border-bottom: none; }
+    .bd-score { font-weight: 800; }
+    .play-again-btn { background: linear-gradient(135deg, #7c3aed, #ec4899); color: #fff; border: none; border-radius: 50px; padding: 17px 52px; font-size: 1.2rem; font-family: 'Fredoka One', cursive; cursor: pointer; box-shadow: 0 0 35px rgba(124,58,237,.55); transition: transform .2s; letter-spacing: .05em; }
+    .play-again-btn:hover { transform: scale(1.06); }
+  </style>
+</head>
+<body>
+<div class="game-container">
+  <div id="titleScreen">
+    <span class="title-emoji">📐</span>
+    <h1 class="game-title">SERVING ANGLES 💅</h1>
+    <p class="subtitle">a no-cap geometry quiz that's lowkey a banger</p>
+    <div class="topic-badges">
+      <span class="badge">📚 Comp &amp; Supp Defs</span>
+      <span class="badge">🎯 Find the Complement</span>
+      <span class="badge">📏 Find the Supplement</span>
+      <span class="badge">🧮 Solve for x</span>
+      <span class="badge">✖️ Vertical Angles</span>
+      <span class="badge">🔗 Adjacent Angles</span>
+    </div>
+    <button class="start-btn" onclick="startGame()">slay the quiz ✨</button>
+    <p class="q-count">25 questions &nbsp;•&nbsp; multiple choice + type-in</p>
+  </div>
+  <div id="quizScreen">
+    <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+    <div class="quiz-header">
+      <span class="q-counter" id="qCounter">Question 1 of 25</span>
+      <div class="hud-right">
+        <div class="streak-chip" id="streakChip">🔥 <span id="streakNum">0</span></div>
+        <div class="score-chip" id="scoreChip">0 / 0</div>
+      </div>
+    </div>
+    <div class="cat-label" id="catLabel"></div>
+    <div class="question-card" id="qCard">
+      <div class="question-text" id="qText"></div>
+      <div id="answerArea"></div>
+      <div class="feedback" id="feedback"><span id="fbIcon"></span>&nbsp;<span id="fbText"></span><div class="expl" id="fbExpl"></div></div>
+    </div>
+    <button class="next-btn" id="nextBtn" onclick="nextQ()">next up →</button>
+  </div>
+  <div id="resultsScreen">
+    <span class="result-emoji" id="resEmoji"></span>
+    <h2 class="result-title" id="resTitle"></h2>
+    <div class="score-big" id="resBig"></div>
+    <div class="score-frac" id="resFrac"></div>
+    <p class="grade-msg" id="resMsg"></p>
+    <div class="breakdown"><h3>📊 how you did by topic</h3><div id="bdRows"></div></div>
+    <button class="play-again-btn" onclick="resetGame()">run it back 🔁</button>
+  </div>
+</div>
+<script>
+const QUESTIONS = [
+  { cat: "📚 Angle Definitions", type: "mc", q: "Complementary angles add up to what total?", opts: ["45°", "90°", "180°", "360°"], ans: 1, expl: "Complementary = 90°.  Memory trick: C comes before S, and 90 comes before 180!" },
+  { cat: "📚 Angle Definitions", type: "mc", q: "Supplementary angles add up to what total?", opts: ["45°", "90°", "180°", "360°"], ans: 2, expl: "Supplementary = 180°.  Think: S for Straight line = 180°!" },
+  { cat: "📚 Angle Definitions", type: "mc", q: "Vertical angles are formed when two lines intersect.\nThey are always...", opts: ["Supplementary  (sum to 180°)", "Complementary  (sum to 90°)", "Congruent  (equal in measure)", "Adjacent  (share a side)"], ans: 2, expl: "Vertical angles are ALWAYS congruent — same exact measure, no exceptions!" },
+  { cat: "📚 Angle Definitions", type: "mc", q: "Two angles are ADJACENT if they share a common...", opts: ["Sum of 90°", "Side AND vertex", "Measure", "Sum of 180°"], ans: 1, expl: "Adjacent = neighbors.  They share a common SIDE and a common VERTEX." },
+  { cat: "📚 Angle Definitions", type: "mc", q: "∠1 = 35° and ∠1 is supplementary to ∠2.\nWhat is m∠2?", opts: ["35°", "55°", "125°", "145°"], ans: 3, expl: "Supplementary → sum = 180°.  180° − 35° = 145°" },
+  { cat: "🎯 Find the Complement", type: "input", q: "Find the complement of 42°.\n(Remember: complementary angles sum to 90°)", ans: 48, unit: "°", expl: "90° − 42° = 48°" },
+  { cat: "🎯 Find the Complement", type: "input", q: "Find the complement of 13°.", ans: 77, unit: "°", expl: "90° − 13° = 77°" },
+  { cat: "🎯 Find the Complement", type: "input", q: "Find the complement of 83°.", ans: 7, unit: "°", expl: "90° − 83° = 7°" },
+  { cat: "🎯 Find the Complement", type: "input", q: "Find the complement of 66°.", ans: 24, unit: "°", expl: "90° − 66° = 24°" },
+  { cat: "📏 Find the Supplement", type: "input", q: "Find the supplement of 22°.\n(Remember: supplementary angles sum to 180°)", ans: 158, unit: "°", expl: "180° − 22° = 158°" },
+  { cat: "📏 Find the Supplement", type: "input", q: "Find the supplement of 113°.", ans: 67, unit: "°", expl: "180° − 113° = 67°" },
+  { cat: "📏 Find the Supplement", type: "input", q: "Find the supplement of 165°.", ans: 15, unit: "°", expl: "180° − 165° = 15°" },
+  { cat: "📏 Find the Supplement", type: "input", q: "Find the supplement of 81°.", ans: 99, unit: "°", expl: "180° − 81° = 99°" },
+  { cat: "🧮 Solve for x — Complementary", type: "mc", q: "∠P = (x + 4)°  and  ∠Q = (5x − 4)°  are complementary.\nFind x.", opts: ["x = 10", "x = 15", "x = 20", "x = 25"], ans: 1, expl: "(x + 4) + (5x − 4) = 90  →  6x = 90  →  x = 15" },
+  { cat: "🧮 Solve for x — Complementary", type: "mc", q: "∠P = (2x − 5)°  and  ∠Q = (x + 20)°  are complementary.\nFind x.", opts: ["x = 20", "x = 25", "x = 30", "x = 35"], ans: 1, expl: "(2x − 5) + (x + 20) = 90  →  3x + 15 = 90  →  3x = 75  →  x = 25" },
+  { cat: "🧮 Solve for x — Complementary", type: "mc", q: "Two complementary angles measure 2x° and 3x°.\nFind x.", opts: ["x = 9", "x = 15", "x = 18", "x = 36"], ans: 2, expl: "2x + 3x = 90  →  5x = 90  →  x = 18" },
+  { cat: "🧮 Solve for x — Complementary", type: "mc", q: "Two complementary angles measure 4x° and (2x + 6)°.\nFind x.", opts: ["x = 12", "x = 14", "x = 16", "x = 18"], ans: 1, expl: "4x + (2x + 6) = 90  →  6x + 6 = 90  →  6x = 84  →  x = 14" },
+  { cat: "🧮 Solve for x — Supplementary", type: "mc", q: "∠H = (x + 4)°  and  ∠J = (3x + 16)°  are supplementary.\nFind x.", opts: ["x = 30", "x = 35", "x = 40", "x = 45"], ans: 2, expl: "(x + 4) + (3x + 16) = 180  →  4x + 20 = 180  →  4x = 160  →  x = 40" },
+  { cat: "🧮 Solve for x — Supplementary", type: "mc", q: "∠R = (x − 43)°  and  ∠S = (x − 7)°  are supplementary.\nFind x.", opts: ["x = 100", "x = 105", "x = 110", "x = 115"], ans: 3, expl: "(x − 43) + (x − 7) = 180  →  2x − 50 = 180  →  2x = 230  →  x = 115" },
+  { cat: "🧮 Solve for x — Supplementary", type: "mc", q: "Two supplementary angles measure (2x + 10)° and (3x + 20)°.\nFind x.", opts: ["x = 25", "x = 30", "x = 35", "x = 40"], ans: 1, expl: "(2x + 10) + (3x + 20) = 180  →  5x + 30 = 180  →  5x = 150  →  x = 30" },
+  { cat: "🧮 Solve for x — Supplementary", type: "mc", q: "One angle measures (x + 23)° and forms a straight line with another angle that measures 130°.\nFind x.", opts: ["x = 25", "x = 27", "x = 30", "x = 33"], ans: 1, expl: "(x + 23) + 130 = 180  →  x + 153 = 180  →  x = 27" },
+  { cat: "✖️ Vertical Angles", type: "mc", q: "Two lines intersect. One angle measures 42°.\nWhat is the measure of its vertical angle?", opts: ["48°", "42°", "138°", "90°"], ans: 1, expl: "Vertical angles are CONGRUENT — they're equal!  Vertical angle = 42°" },
+  { cat: "✖️ Vertical Angles", type: "mc", q: "Two lines intersect forming a 96° angle.\nWhat is the measure of its supplementary neighbor?", opts: ["84°", "94°", "96°", "264°"], ans: 0, expl: "Adjacent angles at an intersection are supplementary:  180° − 96° = 84°" },
+  { cat: "✖️ Vertical Angles", type: "input", q: "Two lines intersect. One angle is (x + 10)° and its vertical angle is 112°.\nFind x.", ans: 102, unit: "", expl: "Vertical angles are equal:  x + 10 = 112  →  x = 102" },
+  { cat: "✖️ Vertical Angles", type: "input", q: "Two lines intersect. One angle is 3x° and its vertical angle is 162°.\nFind x.", ans: 54, unit: "", expl: "Vertical angles are equal:  3x = 162  →  x = 54" },
+  { cat: "✖️ Vertical Angles", type: "input", q: "Two lines intersect. One angle is (2x + 5)° and its vertical angle is 117°.\nFind x.", ans: 56, unit: "", expl: "Vertical angles are equal:  2x + 5 = 117  →  2x = 112  →  x = 56" },
+];
+
+let shuffled = [], cur = 0, score = 0, answered = 0, streak = 0, catStats = {};
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
+  return a;
+}
+
+function startGame() {
+  shuffled = shuffle(QUESTIONS); cur = 0; score = 0; answered = 0; streak = 0; catStats = {};
+  document.getElementById('titleScreen').style.display = 'none';
+  document.getElementById('quizScreen').style.display = 'block';
+  renderQ();
+}
+
+function renderQ() {
+  const q = shuffled[cur], total = shuffled.length;
+  document.getElementById('progressBar').style.width = `${(cur / total) * 100}%`;
+  document.getElementById('qCounter').textContent = `Question ${cur + 1} of ${total}`;
+  document.getElementById('scoreChip').textContent = `${score} / ${answered}`;
+  document.getElementById('catLabel').textContent = q.cat;
+  const chip = document.getElementById('streakChip');
+  if (streak >= 2) { chip.classList.add('show'); document.getElementById('streakNum').textContent = streak; } else chip.classList.remove('show');
+  document.getElementById('qText').innerHTML = q.q.replace(/\n/g, '<br>');
+  const area = document.getElementById('answerArea'); area.innerHTML = '';
+  if (q.type === 'mc') {
+    const grid = document.createElement('div'); grid.className = 'options-grid';
+    q.opts.forEach((opt, i) => { const btn = document.createElement('button'); btn.className = 'opt-btn'; btn.textContent = opt; btn.onclick = () => handleMC(i); grid.appendChild(btn); });
+    area.appendChild(grid);
+  } else {
+    const row = document.createElement('div'); row.className = 'input-row';
+    const inp = document.createElement('input'); inp.type = 'number'; inp.className = 'num-input'; inp.id = 'numInp'; inp.placeholder = 'type your answer…'; inp.onkeydown = e => { if (e.key === 'Enter') handleInput(); };
+    const btn = document.createElement('button'); btn.className = 'check-btn'; btn.id = 'checkBtn'; btn.textContent = 'check it ✓'; btn.onclick = handleInput;
+    row.appendChild(inp); row.appendChild(btn); area.appendChild(row); setTimeout(() => inp.focus(), 80);
+  }
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('nextBtn').className = 'next-btn';
+  const card = document.getElementById('qCard'); card.style.animation = 'none'; void card.offsetHeight; card.style.animation = '';
+}
+
+function handleMC(idx) {
+  const q = shuffled[cur]; answered++;
+  const btns = document.querySelectorAll('.opt-btn'); btns.forEach(b => b.disabled = true);
+  const ok = idx === q.ans; btns[idx].classList.add(ok ? 'correct' : 'wrong');
+  if (!ok) btns[q.ans].classList.add('correct');
+  finishAnswer(ok, q);
+}
+
+function handleInput() {
+  const q = shuffled[cur]; const inp = document.getElementById('numInp'); const btn = document.getElementById('checkBtn');
+  const val = parseFloat(inp.value);
+  if (isNaN(val)) { inp.style.borderColor = '#fbbf24'; inp.placeholder = 'enter a number!'; return; }
+  answered++; inp.disabled = true; btn.disabled = true;
+  const ok = val === q.ans; inp.classList.add(ok ? 'correct' : 'wrong'); finishAnswer(ok, q);
+}
+
+const OK  = ["slay! ✨", "you ate that 🔥", "understood the assignment 💅", "no cap, that's right 🎯", "periodt! ✅", "main character energy 👑"];
+const BAD = ["not it bestie 😬", "lowkey wrong 😅", "that missed fr 💀", "it's giving… incorrect ❌"];
+
+function finishAnswer(ok, q) {
+  if (ok) { score++; streak++; } else streak = 0;
+  const chip = document.getElementById('streakChip');
+  if (streak >= 2) { chip.classList.add('show'); document.getElementById('streakNum').textContent = streak; } else chip.classList.remove('show');
+  document.getElementById('scoreChip').textContent = `${score} / ${answered}`;
+  if (!catStats[q.cat]) catStats[q.cat] = { correct: 0, total: 0 };
+  catStats[q.cat].total++; if (ok) catStats[q.cat].correct++;
+  const fb = document.getElementById('feedback');
+  document.getElementById('fbIcon').textContent = ok ? '✅' : '❌';
+  if (ok) { fb.className = 'feedback show correct-fb'; document.getElementById('fbText').textContent = OK[Math.floor(Math.random() * OK.length)]; }
+  else { fb.className = 'feedback show wrong-fb'; const lbl = q.type === 'mc' ? q.opts[q.ans] : `${q.ans}${q.unit || ''}`; document.getElementById('fbText').textContent = `${BAD[Math.floor(Math.random() * BAD.length)]}  —  correct: ${lbl}`; }
+  document.getElementById('fbExpl').textContent = q.expl;
+  document.getElementById('nextBtn').className = 'next-btn show';
+}
+
+function nextQ() { cur++; if (cur >= shuffled.length) showResults(); else renderQ(); }
+
+function showResults() {
+  document.getElementById('quizScreen').style.display = 'none';
+  document.getElementById('resultsScreen').style.display = 'block';
+  const pct = Math.round((score / answered) * 100);
+  const data = pct === 100 ? ['🏆','PERFECT SCORE!','you literally understood every single assignment. absolute geometry royalty. no notes. 👑']
+    : pct >= 90 ? ['🔥','SO CLOSE TO PERFECT!','you ate and left almost no crumbs. your angle game is seriously bussin fr fr. 💅']
+    : pct >= 80 ? ['✨','SLAYED IT!',"solid performance bestie. a couple more reps and you'll be in your full geometry era. 💪"]
+    : pct >= 70 ? ['📈','NOT BAD AT ALL!','decent showing — you got the vibe. review the ones you missed and run it back. 🔁']
+    : pct >= 55 ? ['🌱','GROWING!',"the foundation is there. angles can be lowkey tricky but you're building. try again! 📐"]
+    : ['💀','IT BE LIKE THAT SOMETIMES',"ok angles said 'not today' 😭 but deadass — review the notes and run it back. you got this! 💪"];
+  document.getElementById('resEmoji').textContent = data[0];
+  document.getElementById('resTitle').textContent = data[1];
+  document.getElementById('resMsg').textContent = data[2];
+  const big = document.getElementById('resBig'); big.textContent = `${pct}%`; big.style.color = pct >= 70 ? '#10b981' : pct >= 50 ? '#fbbf24' : '#ef4444';
+  document.getElementById('resFrac').textContent = `${score} out of ${answered} correct`;
+  const rows = document.getElementById('bdRows'); rows.innerHTML = '';
+  Object.entries(catStats).forEach(([cat, s]) => {
+    const p = Math.round((s.correct / s.total) * 100);
+    const row = document.createElement('div'); row.className = 'bd-row';
+    row.innerHTML = `<span>${cat}</span><span class="bd-score" style="color:${p>=70?'#10b981':p>=50?'#fbbf24':'#ef4444'}">${s.correct}/${s.total} &nbsp;(${p}%)</span>`;
+    rows.appendChild(row);
+  });
+}
+
+function resetGame() { document.getElementById('resultsScreen').style.display = 'none'; document.getElementById('titleScreen').style.display = 'block'; }
+</script>
+</body>
+</html>

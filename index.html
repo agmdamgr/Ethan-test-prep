@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ethan's Test Prep Games 🎮</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;900&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Nunito', sans-serif; background: #0f0a1e; color: #f0e6ff; min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 48px 20px 60px; }
+    body::before { content: ''; position: fixed; inset: 0; background: radial-gradient(ellipse at 20% 10%, rgba(124,58,237,.22) 0%, transparent 55%), radial-gradient(ellipse at 80% 85%, rgba(236,72,153,.18) 0%, transparent 55%); z-index: -1; pointer-events: none; }
+    header { text-align: center; margin-bottom: 48px; }
+    .header-emoji { font-size: 3.5rem; display: block; margin-bottom: 10px; animation: float 3s ease-in-out infinite; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    h1 { font-family: 'Fredoka One', cursive; font-size: clamp(2rem, 7vw, 3rem); background: linear-gradient(135deg, #a78bfa, #f472b6, #fbbf24); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.1; }
+    .tagline { font-size: .95rem; color: #7c6a9a; font-weight: 700; margin-top: 8px; letter-spacing: .04em; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; width: 100%; max-width: 900px; }
+    .game-card { background: #1a1235; border: 1.5px solid rgba(124,58,237,.3); border-radius: 22px; padding: 28px 24px 24px; cursor: pointer; text-decoration: none; color: inherit; display: flex; flex-direction: column; gap: 10px; transition: transform .2s, box-shadow .2s, border-color .2s; position: relative; overflow: hidden; }
+    .game-card::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(124,58,237,.08), rgba(236,72,153,.08)); opacity: 0; transition: opacity .2s; }
+    .game-card:hover { transform: translateY(-5px); box-shadow: 0 16px 48px rgba(124,58,237,.35); border-color: rgba(124,58,237,.7); }
+    .game-card:hover::before { opacity: 1; }
+    .card-emoji { font-size: 2.8rem; }
+    .card-title { font-family: 'Fredoka One', cursive; font-size: 1.5rem; background: linear-gradient(135deg, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1.15; }
+    .card-subject { font-size: .78rem; font-weight: 800; text-transform: uppercase; letter-spacing: .1em; color: #f472b6; }
+    .card-desc { font-size: .9rem; color: #c4b5fd; line-height: 1.55; font-weight: 600; }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+    .tag { background: rgba(124,58,237,.18); border: 1px solid rgba(124,58,237,.4); border-radius: 99px; padding: 3px 11px; font-size: .75rem; font-weight: 700; color: #c4b5fd; }
+    .play-row { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
+    .q-count { font-size: .8rem; color: #6b5b8a; font-weight: 700; }
+    .play-btn { background: linear-gradient(135deg, #7c3aed, #ec4899); color: #fff; border: none; border-radius: 99px; padding: 9px 22px; font-size: .9rem; font-family: 'Fredoka One', cursive; cursor: pointer; letter-spacing: .04em; pointer-events: none; }
+    footer { margin-top: 56px; color: #3d2d5c; font-size: .8rem; font-weight: 700; text-align: center; }
+  </style>
+</head>
+<body>
+  <header>
+    <span class="header-emoji">🎮</span>
+    <h1>Ethan's Test Prep Games</h1>
+    <p class="tagline">click a game. learn stuff. slay. 💅</p>
+  </header>
+  <div class="grid">
+    <a class="game-card" href="serving-angles.html">
+      <span class="card-emoji">📐</span>
+      <div class="card-subject">7th Grade Math • Geometry</div>
+      <div class="card-title">SERVING ANGLES 💅</div>
+      <p class="card-desc">a no-cap geometry quiz that's lowkey a banger — complementary, supplementary, vertical, and adjacent angles.</p>
+      <div class="card-tags">
+        <span class="tag">Complementary</span>
+        <span class="tag">Supplementary</span>
+        <span class="tag">Vertical Angles</span>
+        <span class="tag">Solve for x</span>
+      </div>
+      <div class="play-row">
+        <span class="q-count">25 questions</span>
+        <button class="play-btn">play ▶</button>
+      </div>
+    </a>
+  </div>
+  <footer>more games coming whenever ethan has more homework 😈</footer>
+</body>
+</html>
