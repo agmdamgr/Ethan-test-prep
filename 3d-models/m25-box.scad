@@ -19,6 +19,8 @@ insert_hole_depth = 7.5; // 4 mm insert + tip room for 6 or 8 mm screws
 boss_d = 8;
 boss_inset = 5;        // screw center from each outer corner
 
+chamfer = 0.6;         // radial entry chamfer, same as the test coupon
+
 screw_clear_d = 2.8;
 cbore_d = 5.2;
 cbore_depth = 1.0;
@@ -51,10 +53,14 @@ module base() {
                 translate([p[0], p[1], floor_t])
                     cylinder(d = boss_d, h = wall_top - floor_t);
         }
-        // insert holes
-        for (p = screw_xy)
+        // insert holes with 45-degree entry chamfer
+        for (p = screw_xy) {
             translate([p[0], p[1], wall_top - insert_hole_depth])
                 cylinder(d = insert_hole_d, h = insert_hole_depth + 1);
+            translate([p[0], p[1], wall_top - chamfer])
+                cylinder(d1 = insert_hole_d,
+                         d2 = insert_hole_d + 2 * chamfer + 0.02, h = chamfer + 0.01);
+        }
     }
 }
 

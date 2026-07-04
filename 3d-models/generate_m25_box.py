@@ -12,7 +12,7 @@ Requires: pip install numpy trimesh manifold3d shapely
 import numpy as np
 import trimesh
 from shapely.geometry import box as rect
-from trimesh.creation import cylinder, extrude_polygon
+from trimesh.creation import cone, cylinder, extrude_polygon
 
 # ---- parameters (mm) -------------------------------------------------
 BOX_L, BOX_W, BOX_H = 60.0, 40.0, 25.0   # external size, lid included
@@ -25,6 +25,8 @@ INSERT_HOLE_D = 3.5      # from the test coupon: 3.4-3.6 good, 3.5 = sweet spot
 INSERT_HOLE_DEPTH = 7.5  # 4 mm insert + room for a 6 or 8 mm screw tip
 BOSS_D = 8.0
 BOSS_INSET = 5.0         # boss/screw center from each outer corner
+
+CHAMFER = 0.6            # radial entry chamfer, same as the test coupon
 
 SCREW_CLEAR_D = 2.8
 CBORE_D = 5.2
@@ -64,6 +66,12 @@ def make_base():
                      sections=SECTIONS)
         h.apply_translation((x, y, WALL_TOP - INSERT_HOLE_DEPTH / 2 + 0.1))
         holes.append(h)
+        # 45-degree entry chamfer: cone base above the boss top, apex down
+        r = INSERT_HOLE_D / 2 + CHAMFER + 0.5
+        ch = cone(radius=r, height=r, sections=SECTIONS)
+        ch.apply_transform(trimesh.transformations.rotation_matrix(np.pi, (1, 0, 0)))
+        ch.apply_translation((x, y, WALL_TOP + 0.5))
+        holes.append(ch)
 
     shell = trimesh.boolean.difference([outer, cavity], engine="manifold")
     base = trimesh.boolean.union([shell] + bosses, engine="manifold")
