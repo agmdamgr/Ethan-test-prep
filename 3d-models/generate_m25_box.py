@@ -32,6 +32,11 @@ SCREW_CLEAR_D = 2.8
 CBORE_D = 5.2
 CBORE_DEPTH = 1.0
 
+LIP_H = 1.5       # registration lip on lid underside, nests into the cavity
+LIP_W = 1.2
+LIP_CLEAR = 0.25  # per-side gap to the cavity wall
+BOSS_CLEAR = 0.3  # lip cutout gap around each boss
+
 SECTIONS = 96
 
 WALL_TOP = BOX_H - LID_T
@@ -79,16 +84,34 @@ def make_base():
 
 
 def make_lid():
+    # plate sits on top of the lip: lip z 0..LIP_H, plate z LIP_H..LIP_H+LID_T
     plate = extrude_polygon(rounded_rect(0, 0, BOX_L, BOX_W, CORNER_R), LID_T)
+    plate.apply_translation((0, 0, LIP_H))
+
+    # lip ring: cavity outline shrunk by the clearance, LIP_W wide
+    outer = rounded_rect(WALL + LIP_CLEAR, WALL + LIP_CLEAR,
+                         BOX_L - WALL - LIP_CLEAR, BOX_W - WALL - LIP_CLEAR,
+                         CORNER_R - 1 - LIP_CLEAR)
+    ring = outer.difference(outer.buffer(-LIP_W))
+    lip = extrude_polygon(ring, LIP_H + 0.1)  # slight overlap into the plate
+
     cutters = []
+    top = LIP_H + LID_T
     for x, y in SCREW_XY:
-        h = cylinder(radius=SCREW_CLEAR_D / 2, height=LID_T + 2, sections=SECTIONS)
-        h.apply_translation((x, y, LID_T / 2))
+        h = cylinder(radius=SCREW_CLEAR_D / 2, height=top + 2, sections=SECTIONS)
+        h.apply_translation((x, y, top / 2))
         cutters.append(h)
         cb = cylinder(radius=CBORE_D / 2, height=CBORE_DEPTH + 0.2, sections=SECTIONS)
-        cb.apply_translation((x, y, LID_T - CBORE_DEPTH / 2 + 0.1))
+        cb.apply_translation((x, y, top - CBORE_DEPTH / 2 + 0.1))
         cutters.append(cb)
-    return trimesh.boolean.difference([plate] + cutters, engine="manifold")
+        # clear the lip around each corner boss
+        bc = cylinder(radius=BOSS_D / 2 + BOSS_CLEAR, height=LIP_H + 1,
+                      sections=SECTIONS)
+        bc.apply_translation((x, y, (LIP_H - 1) / 2))
+        cutters.append(bc)
+
+    lid = trimesh.boolean.union([plate, lip], engine="manifold")
+    return trimesh.boolean.difference([lid] + cutters, engine="manifold")
 
 
 def main():

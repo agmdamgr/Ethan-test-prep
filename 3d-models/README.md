@@ -31,8 +31,10 @@ putting inserts in vertical walls.
 ## Screw-together box
 
 Simple 60 × 40 × 25 mm box: base with four Ø8 mm corner bosses (Ø3.5 mm ×
-7.5 mm deep insert holes, sized for 4 mm long M2.5 inserts) and a flat
-2.2 mm lid with counterbored clearance holes.
+7.5 mm deep chamfered insert holes, sized for 4 mm long M2.5 inserts) and a
+2.2 mm lid with counterbored clearance holes. The lid has a 1.5 mm
+registration lip on its underside (0.25 mm clearance per side, with cutouts
+around the bosses) that nests into the cavity and self-aligns the lid.
 
 - **Screws: M2.5 × 6 mm recommended** (~4.8 mm of engagement — full insert
   depth plus tip clearance). 8 mm also fits. 12 mm bottoms out — don't.
@@ -47,7 +49,8 @@ Simple 60 × 40 × 25 mm box: base with four Ø8 mm corner bosses (Ø3.5 mm ×
 
 ### Printing
 
-- Both parts print flat, no supports (base open side up, lid counterbores up).
+- Both parts print flat, no supports. Base: open side up. Lid: outer face
+  down / lip up (the counterbores face the bed and print fine).
 - 3–4 walls so bosses are solid plastic where the inserts grip.
 
 ## Setting inserts

@@ -25,6 +25,11 @@ screw_clear_d = 2.8;
 cbore_d = 5.2;
 cbore_depth = 1.0;
 
+lip_h = 1.5;      // registration lip on lid underside, nests into the cavity
+lip_w = 1.2;
+lip_clear = 0.25; // per-side gap to the cavity wall
+boss_clear = 0.3; // lip cutout gap around each boss
+
 wall_top = box_h - lid_t;
 screw_xy = [[boss_inset, boss_inset],
             [box_l - boss_inset, boss_inset],
@@ -65,14 +70,33 @@ module base() {
 }
 
 module lid() {
+    lip_l = box_l - 2 * (wall + lip_clear);
+    lip_ww = box_w - 2 * (wall + lip_clear);
+    lip_r = corner_r - 1 - lip_clear;
     difference() {
-        linear_extrude(lid_t)
-            translate([corner_r, corner_r]) rounded_rect(box_l, box_w, corner_r);
+        union() {
+            // plate on top of the lip: lip z 0..lip_h, plate above
+            translate([0, 0, lip_h])
+                linear_extrude(lid_t)
+                    translate([corner_r, corner_r]) rounded_rect(box_l, box_w, corner_r);
+            // lip ring, nests inside the cavity
+            translate([wall + lip_clear, wall + lip_clear])
+                linear_extrude(lip_h + 0.1)
+                    difference() {
+                        translate([lip_r, lip_r]) rounded_rect(lip_l, lip_ww, lip_r);
+                        translate([lip_w + lip_r, lip_w + lip_r])
+                            rounded_rect(lip_l - 2 * lip_w, lip_ww - 2 * lip_w,
+                                         max(lip_r - lip_w, 0.1));
+                    }
+        }
         for (p = screw_xy) {
             translate([p[0], p[1], -1])
-                cylinder(d = screw_clear_d, h = lid_t + 2);
-            translate([p[0], p[1], lid_t - cbore_depth])
+                cylinder(d = screw_clear_d, h = lip_h + lid_t + 2);
+            translate([p[0], p[1], lip_h + lid_t - cbore_depth])
                 cylinder(d = cbore_d, h = cbore_depth + 1);
+            // clear the lip around each corner boss
+            translate([p[0], p[1], -1])
+                cylinder(d = boss_d + 2 * boss_clear, h = lip_h + 1);
         }
     }
 }
