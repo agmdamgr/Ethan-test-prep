@@ -6,7 +6,7 @@ A small block (68 × 16 × 8 mm, ~8 g of filament) with five through-holes in
 different diameters — **3.2, 3.4, 3.5, 3.6, 3.8 mm** — each labeled next to
 the hole. Press an M2.5 insert into each and find the size that grips best.
 
-### Test results (2026-07-03, PLA)
+### Test results (2026-07-03, PETG, Bambu Lab P1S, 0.4 nozzle, 0.2 mm layers)
 
 | Hole  | Result                                     |
 | ----- | ------------------------------------------ |
