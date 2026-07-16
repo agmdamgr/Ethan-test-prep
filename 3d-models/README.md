@@ -53,6 +53,31 @@ around the bosses) that nests into the cavity and self-aligns the lid.
   down / lip up (the counterbores face the bed and print fine).
 - 3–4 walls so bosses are solid plastic where the inserts grip.
 
+## Project enclosure
+
+80 × 50 × 30 mm enclosure demonstrating the full feature set, all printable
+without supports:
+
+- four corner bosses — Ø3.5 × 7.5 mm chamfered insert holes (M2.5 × 6 or 8)
+- four PCB standoffs, 5 mm tall, on a 56 × 26 mm mounting pattern —
+  chamfered insert holes, **M2.5 × 6 screws only** (8 mm bottoms out)
+- six vent slots (2 × 14 mm) through each long wall
+- U-shaped cable port (12 mm wide, 8 mm deep) in one end wall, closed off
+  by the lid; the lid's lip is interrupted there so the full opening is usable
+- wall-mount ears with Ø4.2 countersunk holes (#6 / M3.5 flat-head screws)
+- lid with registration lip and counterbored M2.5 clearance holes
+
+### Files
+
+- `enclosure-base.stl`, `enclosure-lid.stl` — ready to slice
+- `m25-enclosure.scad` — editable source; set `part = "base"` or `"lid"`;
+  the PCB pattern, vents, port, and all clearances are parameters
+- `generate_m25_enclosure.py` — Python generator that produced the STLs
+
+Printing: same as the box — base open side up, lid outer-face down (lip up),
+3–4 walls, no supports. The vent-slot tops are 2 mm bridges; any printer
+handles that.
+
 ## Setting inserts
 
 1. Iron at ~200–230 °C (PLA) / ~230–250 °C (PETG), ideally with an insert tip.
